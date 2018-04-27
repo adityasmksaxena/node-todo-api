@@ -5,9 +5,21 @@ import app from '../server';
 import Todo from '../models/todo';
 
 
+const todos = [
+  {
+    text: "Todo 1"
+  }, {
+    text: "Todo 2"
+  }, {
+    text: "Todo 3"
+  }
+];
+
 beforeEach((done) => {
   Todo.remove({})
+  .then(() => Todo.insertMany(todos))
   .then(() => done())
+  .catch((err => done(err)));
 });
 
 describe('POST /todos', () => {
@@ -24,7 +36,7 @@ describe('POST /todos', () => {
     .end((err, res) => {
       if(err) return done(err);
       
-      Todo.find()
+      Todo.find({text})
       .then((todos) => {
         expect(todos.length).toBe(1);
         expect(todos[0].text).toBe(text);
@@ -42,10 +54,24 @@ describe('POST /todos', () => {
       if(err) return done(err);
       Todo.find()
       .then((todos) => {
-        expect(todos.length).toBe(0);
+        expect(todos.length).toBe(3);
         done();
       }).catch((err) => done(err));
     })
   });
   
+});
+
+describe('GET /todos', () => {
+
+  it('should get all todos', (done) => {
+    request(app)
+    .get('/todos')
+    .expect(200)
+    .expect((res) => {
+      expect(res.body.todos.length).toBe(3);
+    })
+    .end(done);
+  });
+
 });
