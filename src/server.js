@@ -13,6 +13,7 @@ import Todo from './models/todo';
 // console.log(process.env.SEC);
 
 let app = express();
+const port = process.env.PORT || 3001;
 
 app.use(bodyParser.json());
 
@@ -49,8 +50,8 @@ app.get('/todos/:id', (req, res) => {
   })
 });
 
-app.listen(3001, () => {
-  console.log('Started on port 3001');
+app.listen(port, () => {
+  console.log(`Server started on port ${port}`);
 });
 
 export default app;
