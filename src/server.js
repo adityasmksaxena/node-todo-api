@@ -1,16 +1,10 @@
 import express from 'express';
-import mongoose from './db/mongoose';
 import {ObjectId} from 'mongodb';
-
 import bodyParser from 'body-parser';
 
+import mongoose from './db/mongoose';
 import User from './models/user';
 import Todo from './models/todo';
-
-// console.log(global);
-// console.log(process);
-// console.log(module);
-// console.log(process.env.SEC);
 
 let app = express();
 const port = process.env.PORT || 3001;
