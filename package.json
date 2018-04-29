@@ -6,7 +6,7 @@
   "scripts": {
     "test": "mocha bin/dev-test",
     "test-watch": "nodemon --exec 'npm test'",
-    "start": "node bin/dev",
+    "start": "nodemon bin/dev",
     "clean": "rm -rf dist",
     "build": "npm run clean && mkdir dist && babel src -s -d dist",
     "production": "npm run build && node bin/production"
