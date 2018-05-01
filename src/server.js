@@ -1,12 +1,15 @@
+require('./config/config');
+
 import express from 'express';
 import {ObjectId} from 'mongodb';
 import bodyParser from 'body-parser';
 
-import mongoose from './db/mongoose';
+require('./db/mongoose');
+
 import User from './models/user';
 import Todo from './models/todo';
 
-const port = process.env.PORT || 3001;
+const port = process.env.PORT;
 let app = express();
 app.use(bodyParser.json());
 
