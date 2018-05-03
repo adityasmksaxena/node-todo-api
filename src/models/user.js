@@ -3,7 +3,7 @@ import mongoose from 'mongoose';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
 
-let userSchema = new mongoose.Schema({
+let UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -32,7 +32,7 @@ let userSchema = new mongoose.Schema({
   }]
 });
 
-userSchema.methods.generateAuthToken = function () {
+UserSchema.methods.generateAuthToken = function () {
   const user = this;
   const access = 'auth';
   const {_id} = user;
@@ -45,13 +45,28 @@ userSchema.methods.generateAuthToken = function () {
   .then(() => token)
 };
 
-userSchema.methods.toJSON = function () {
+UserSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
   const {_id, email} = userObject;
   return {_id, email};
 };
 
-const User = mongoose.model('User', userSchema);
+UserSchema.statics.findByToken = function (token) {
+  let User = this;
+  let decoded;
+  try {
+    decoded = jwt.verify(token, '123ABC');
+  } catch (err) {
+    return Promise.reject();
+  }
+  return User.findOne({
+    _id: decoded._id,
+    'tokens.token': token,
+    'tokens.access': 'auth'
+  })
+};
+
+const User = mongoose.model('User', UserSchema);
 
 export default User;

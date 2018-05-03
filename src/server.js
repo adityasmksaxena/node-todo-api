@@ -4,8 +4,9 @@ import express from 'express';
 import {ObjectId} from 'mongodb';
 import bodyParser from 'body-parser';
 
-require('./db/mongoose');
+import authenticate from './middleware/authenticate';
 
+require('./db/mongoose');
 import User from './models/user';
 import Todo from './models/todo';
 
@@ -110,6 +111,12 @@ app.post('/users', (req, res) => {
   }).catch((err) => {
     res.status(400).send(err);
   });
+});
+
+
+
+app.get('/users/me', authenticate, (req, res) => {
+  res.send(req.user);
 });
 
 
