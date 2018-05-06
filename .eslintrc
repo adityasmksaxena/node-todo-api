@@ -1,0 +1,28 @@
+{
+  "extends": "airbnb",
+  "parserOptions": {
+    "ecmaVersion": 2017,
+    "sourceType": "module"
+  },
+  "env": {
+    "node": true,
+    "browser": true,
+    "es6": true,
+    "mocha": true
+  },
+  "rules": {
+    "no-console": "warn",
+    "react/jsx-filename-extension": 0,
+    "indent": [2, 2, {"SwitchCase": 1}],
+    "no-underscore-dangle": "off",
+    "arrow-parens": [2, "always"],
+    "consistent-return": "off",
+    "function-paren-newline": ["error", "consistent"],
+    "no-unused-vars": [
+      "error", {
+        "vars": "local",
+        "args": "none"
+      }
+    ]
+  }
+}

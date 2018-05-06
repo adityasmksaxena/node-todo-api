@@ -1,9 +1,9 @@
-let env = process.env.NODE_ENV || 'development';
+const env = process.env.NODE_ENV || 'development';
 
 if(env === 'development') {
   process.env.MONGODB_URI = 'mongodb://localhost:27018/TodoApp';
-  process.env.PORT = 3001;
+  process.env.PORT = '3001';
 } else if(env === 'test') {
   process.env.MONGODB_URI = 'mongodb://localhost:27018/TodoAppTest';
-  process.env.PORT = 3001;
+  process.env.PORT = '3001';
 }
