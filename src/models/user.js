@@ -1,10 +1,9 @@
-
 import mongoose from 'mongoose';
 import validator from 'validator';
 import jwt from 'jsonwebtoken';
 import bcrypt from 'bcryptjs';
 
-let UserSchema = new mongoose.Schema({
+const UserSchema = new mongoose.Schema({
   email: {
     type: String,
     required: true,
@@ -14,7 +13,7 @@ let UserSchema = new mongoose.Schema({
     validate: {
       validator: validator.isEmail,
       message: '{VALUE} is not a valid email'
-    }
+    },
   },
   password: {
     type: String,
@@ -29,40 +28,37 @@ let UserSchema = new mongoose.Schema({
     token: {
       type: String,
       required: true,
-    }
-  }]
+    },
+  }],
 });
 
 UserSchema.methods.generateAuthToken = function () {
   const user = this;
   const access = 'auth';
   const {_id} = user;
-  let token = jwt.sign({
-    _id : _id.toHexString(),
-    access
-  }, '123ABC').toString();
+  const token = jwt.sign({ _id : _id.toHexString(), access }, process.env.JWT_SECRET).toString();
   user.tokens = user.tokens.concat([{access, token}]);
   return user.save()
-  .then(() => token)
+    .then(() => token);
 };
 
 UserSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();
-  const {_id, email} = userObject;
-  return {_id, email};
+  const { _id, email } = userObject;
+  return { _id, email };
 };
 
 UserSchema.methods.removeToken = function (token) {
-  let user = this;
-  return user.update({$pull: {tokens: {token}}});
+  const user = this;
+  return user.update({ $pull: { tokens: { token } } });
 };
 
 UserSchema.statics.findByToken = function (token) {
-  let User = this;
+  const User = this;
   let decoded;
   try {
-    decoded = jwt.verify(token, '123ABC');
+    decoded = jwt.verify(token, process.env.JWT_SECRET);
   } catch (err) {
     return Promise.reject();
   }
@@ -74,17 +70,17 @@ UserSchema.statics.findByToken = function (token) {
 };
 
 UserSchema.statics.findByCredentials = function (email, password) {
-  let User = this;
+  const User = this;
   return User.findOne({email})
-  .then((user) => {
-    if(!user) return Promise.reject();
-    return new Promise((resolve, reject) => {
-      bcrypt.compare(password, user.password, (err, res) => {
-        if(res) resolve(user);
-        reject();
-      })
-    })
-  })
+    .then((user) => {
+      if(!user) return Promise.reject();
+      return new Promise((resolve, reject) => {
+        bcrypt.compare(password, user.password, (err, res) => {
+          if(res) resolve(user);
+          reject();
+        });
+      });
+    });
 };
 
 UserSchema.pre('save', function (next) {
