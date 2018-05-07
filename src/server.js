@@ -10,7 +10,6 @@ import Todo from './models/todo';
 require('./config/config');
 require('./db/mongoose');
 
-
 const port = process.env.PORT;
 const app = express();
 app.use(bodyParser.json());
@@ -19,9 +18,10 @@ app.use(bodyParser.json());
 // Todos Related Routes
 
 app.post('/todos', authenticate, (req, res) => {
+  const { user } = req;
   const todo = new Todo({
     text: req.body.text,
-    _creator: req.user._id,
+    _creator: user._id,
   });
   todo.save()
     .then((doc) => {
@@ -53,9 +53,10 @@ app.get('/todos/:id', authenticate, (req, res) => {
 });
 
 app.delete('/todos/:id', authenticate, (req, res) => {
+  const { user } = req;
   const { id } = req.params;
   if (!ObjectId.isValid(id)) return res.status(404).send();
-  Todo.findOneAndRemove({ _id: id, _creator: req.user._id })
+  Todo.findOneAndRemove({ _id: id, _creator: user._id })
     .then((todo) => {
       if (!todo) return res.status(404).send();
       res.send({ todo });
@@ -65,6 +66,7 @@ app.delete('/todos/:id', authenticate, (req, res) => {
 });
 
 app.patch('/todos/:id', authenticate, (req, res) => {
+  const { user } = req;
   const { id } = req.params;
   const { text } = req.body;
   let { isCompleted } = req.body;
@@ -77,7 +79,7 @@ app.patch('/todos/:id', authenticate, (req, res) => {
   }
   Todo.findOneAndUpdate({
     _id: id,
-    _creator: req.user._id
+    _creator: user._id,
   }, {
     $set: {
       text,
@@ -128,7 +130,8 @@ app.get('/users/me', authenticate, (req, res) => {
 });
 
 app.delete('/users/me/token', authenticate, (req, res) => {
-  req.user.removeToken(req.token)
+  const { user, token } = req;
+  user.removeToken(token)
     .then(() => {
       res.send();
     }).catch(() => {

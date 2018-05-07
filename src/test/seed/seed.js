@@ -6,7 +6,7 @@ import User from '../../models/user';
 
 const userOneId = new ObjectID();
 const userTwoId = new ObjectID();
-export const users = [
+export const testUsers = [
   {
     _id: userOneId,
     email: 'adityasmksaxena@gmail.com',
@@ -26,7 +26,7 @@ export const users = [
   },
 ];
 
-export const todos = [
+export const testTodos = [
   {
     _id: new ObjectID(),
     text: 'Todo 1',
@@ -47,8 +47,8 @@ export const todos = [
 export const populateUsers = (done) => {
   User.remove({})
     .then(() => {
-      const user1 = new User(users[0]).save();
-      const user2 = new User(users[1]).save();
+      const user1 = new User(testUsers[0]).save();
+      const user2 = new User(testUsers[1]).save();
       return Promise.all([user1, user2]);
     }).then(() => done())
     .catch((err) => done(err));
@@ -56,7 +56,7 @@ export const populateUsers = (done) => {
 
 export const populateTodos = (done) => {
   Todo.remove({})
-    .then(() => Todo.insertMany(todos))
+    .then(() => Todo.insertMany(testTodos))
     .then(() => done())
     .catch((err) => done(err));
 };
