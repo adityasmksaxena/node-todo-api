@@ -296,10 +296,10 @@ describe('POST /users/login', () => {
         if (err) return done(err);
         User.findById(testUsers[1]._id)
           .then((user) => {
-            // expect(user.tokens[1]).toInclude({
-            //   access: 'auth',
-            //   token: res.header['x-auth']
-            // });
+            expect(user.toObject().tokens[1]).toMatchObject({
+              access: 'auth',
+              token: res.header['x-auth'],
+            });
             done();
           }).catch((e) => done(e));
       });
